@@ -19,15 +19,16 @@ syntax on
 
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
+    exe "normal mz"
+    %s/\s\+$//ge
+    exe "normal `z"
 endfunc
+
 autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd FileType php noremap <C-L> :!clear;php -ln %<CR>
 
 if version >= 603
-	set helplang=cn
+    set helplang=cn
 endif
 
 set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [POS=%l,%v][%p%%]\ %{strftime(\"%d/%m/%y\ -\ %H:%M\")}   "状态行显示的内容  
@@ -49,3 +50,28 @@ nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>
 call pathogen#infect()  
 syntax on
 filetype plugin indent on
+
+" Use <leader>t to open ctrlp
+" let g:ctrlp_map = '<leader>t'
+let g:ctrlp_map = '<c-p>'
+" Ignore these directories
+set wildignore+=*/build/**
+" disable caching
+let g:ctrlp_use_caching=0
+
+nmap <leader>d :NERDTreeToggle<CR>
+
+let g:SuperTabDefaultCompletionType = 'context'
+
+let g:acp_behaviorJavaEclimLength = 3
+function MeetsForJavaEclim(context)
+    return g:acp_behaviorJavaEclimLength >= 0 &&
+                \ a:context =~ '\k\.\k\{' . g:acp_behaviorJavaEclimLength . ',}$'
+endfunction
+let g:acp_behavior = {
+    \ 'java': [{
+    \ 'command': "\<c-x>\<c-u>",
+    \ 'completefunc' : 'eclim#java#complete#CodeComplete',
+    \ 'meets'        : 'MeetsForJavaEclim',
+    \ }]
+\ }
